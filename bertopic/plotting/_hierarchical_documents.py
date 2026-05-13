@@ -10,10 +10,10 @@ def visualize_hierarchical_documents(
     topic_model,
     docs: List[str],
     hierarchical_topics: pd.DataFrame,
-    topics: List[int] = None,
+    topics: List[int] | None = None,
     embeddings: np.ndarray = None,
     reduced_embeddings: np.ndarray = None,
-    sample: Union[float, int] = None,
+    sample: Union[float, int] | None = None,
     hide_annotations: bool = False,
     hide_document_hover: bool = True,
     nr_levels: int = 10,
@@ -216,7 +216,7 @@ def visualize_hierarchical_documents(
             if topic_model.get_topic(topic):
                 if isinstance(custom_labels, str):
                     trace_name = f"{topic}_" + "_".join(
-                        list(zip(*topic_model.topic_aspects_[custom_labels][topic]))[0][:3]
+                        next(zip(*topic_model.topic_aspects_[custom_labels][topic]))[:3]
                     )
                 elif topic_model.custom_labels_ is not None and custom_labels:
                     trace_name = topic_model.custom_labels_[topic + topic_model._outliers]
@@ -230,7 +230,7 @@ def visualize_hierarchical_documents(
         else:
             trace_name = (
                 f"{topic}_"
-                + hierarchical_topics.loc[hierarchical_topics.Parent_ID == str(topic), "Parent_Name"].values[0]
+                + hierarchical_topics.loc[hierarchical_topics.Parent_ID == str(topic), "Parent_Name"].to_numpy()[0]
             )
             plot_text = "_".join([name[:20] for name in trace_name.split("_")[:3]])
             topic_names[topic] = {
